@@ -262,8 +262,11 @@ public sealed class MetaApiRestClient : IMarketDataProvider, ITradeExecutor
         TradeRequest request,
         CancellationToken cancellationToken = default)
     {
-        EnsureMetaApiEnabled();
-        request.Instrument = NormaliseSymbol(request.Instrument);
+        EnsureMetaApiEnabled();         
+        if (!request.Instrument.EndsWith("m"))
+        {
+            request.Instrument = NormaliseSymbol(request.Instrument);
+        }
 
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrWhiteSpace(request.Instrument);
@@ -281,23 +284,42 @@ public sealed class MetaApiRestClient : IMarketDataProvider, ITradeExecutor
         var slippagePoints = ConvertPipsToPoints(spec, request.AllowedSlippagePips);
         var normalizedVolume = NormalizeVolume(request.Quantity, spec);
 
-        var payload = new MetaApiTradeRequest
+        //var payload = new MetaApiTradeRequest
+        //{
+        //    ActionType = request.Direction == TradeDirection.Buy
+        //        ? "ORDER_TYPE_BUY"
+        //        : "ORDER_TYPE_SELL",
+        //    Symbol = request.Instrument,
+        //    Volume = normalizedVolume,
+        //    StopLoss = request.StopLoss > 0 ? request.StopLoss : null,
+        //    TakeProfit = request.TakeProfit > 0 ? request.TakeProfit : null,
+        //    Comment = string.IsNullOrWhiteSpace(request.Comment)
+        //        ? request.StrategyTag
+        //        : request.Comment,
+        //    //ClientId = string.IsNullOrWhiteSpace(request.ClientId)
+        //    //    ? BuildClientId(request)
+        //    //    : request.ClientId,
+        //    //Magic = request.MagicNumber,
+        //    //Slippage = slippagePoints
+        //};
+
+        var payload = new
         {
-            ActionType = request.Direction == TradeDirection.Buy
-                ? "ORDER_TYPE_BUY"
-                : "ORDER_TYPE_SELL",
-            Symbol = request.Instrument,
-            Volume = normalizedVolume,
-            StopLoss = request.StopLoss > 0 ? request.StopLoss : null,
-            TakeProfit = request.TakeProfit > 0 ? request.TakeProfit : null,
-            Comment = string.IsNullOrWhiteSpace(request.Comment)
-                ? request.StrategyTag
-                : request.Comment,
-            ClientId = string.IsNullOrWhiteSpace(request.ClientId)
-                ? BuildClientId(request)
-                : request.ClientId,
-            Magic = request.MagicNumber,
-            Slippage = slippagePoints
+            actionType = request.Direction == TradeDirection.Buy
+                    ? "ORDER_TYPE_BUY"
+                    : "ORDER_TYPE_SELL",
+            symbol = request.Instrument,
+            volume = normalizedVolume,
+            stopLoss = (double)request.StopLoss,
+            takeProfit = (double)request.TakeProfit,
+            comment = string.IsNullOrWhiteSpace(request.Comment)
+                    ? request.StrategyTag
+                    : request.Comment,
+            //ClientId = string.IsNullOrWhiteSpace(request.ClientId)
+            //    ? BuildClientId(request)
+            //    : request.ClientId,
+            //Magic = request.MagicNumber,
+            //Slippage = slippagePoints
         };
 
         var requestUri = BuildTradingUri("trade");
@@ -319,11 +341,18 @@ public sealed class MetaApiRestClient : IMarketDataProvider, ITradeExecutor
         EnsureMetaApiEnabled();
         ArgumentException.ThrowIfNullOrWhiteSpace(positionId);
 
-        var payload = new MetaApiTradeRequest
+        //var payload = new MetaApiTradeRequest
+        //{
+        //    ActionType = "POSITION_CLOSE_ID",
+        //    PositionId = positionId,
+        //    Comment = comment
+        //};
+
+        var payload = new 
         {
-            ActionType = "POSITION_CLOSE_ID",
-            PositionId = positionId,
-            Comment = comment
+            actionType = "POSITION_CLOSE_ID",
+            positionId = positionId,
+            comment = comment
         };
 
         var requestUri = BuildTradingUri("trade");
@@ -346,12 +375,20 @@ public sealed class MetaApiRestClient : IMarketDataProvider, ITradeExecutor
         EnsureMetaApiEnabled();
         ArgumentException.ThrowIfNullOrWhiteSpace(positionId);
 
-        var payload = new MetaApiTradeRequest
+        //var payload = new MetaApiTradeRequest
+        //{
+        //    ActionType = "POSITION_MODIFY",
+        //    PositionId = positionId,
+        //    StopLoss = stopLoss,
+        //    TakeProfit = takeProfit
+        //};
+
+        var payload = new 
         {
-            ActionType = "POSITION_MODIFY",
-            PositionId = positionId,
-            StopLoss = stopLoss,
-            TakeProfit = takeProfit
+            actionType = "POSITION_MODIFY",
+            positionId = positionId,
+            stopLoss = stopLoss,
+            takeProfit = takeProfit
         };
 
         var requestUri = BuildTradingUri("trade");

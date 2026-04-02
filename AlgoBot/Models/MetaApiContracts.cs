@@ -211,14 +211,14 @@ internal sealed class MetaApiTradeRequest
     [JsonPropertyName("comment")]
     public string? Comment { get; set; }
 
-    [JsonPropertyName("clientId")]
-    public string? ClientId { get; set; }
+    //[JsonPropertyName("clientId")]
+    //public string? ClientId { get; set; }
 
-    [JsonPropertyName("magic")]
-    public long? Magic { get; set; }
+    //[JsonPropertyName("magic")]
+    //public long? Magic { get; set; }
 
-    [JsonPropertyName("slippage")]
-    public int? Slippage { get; set; }
+    //[JsonPropertyName("slippage")]
+    //public int? Slippage { get; set; }
 
     [JsonPropertyName("positionId")]
     public string? PositionId { get; set; }

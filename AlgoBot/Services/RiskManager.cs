@@ -144,16 +144,16 @@ public sealed class RiskManager : IRiskManager
         var spec = await GetSpecificationAsync(instrumentState.Instrument, cancellationToken);
 
         var spreadPips = PriceHelper.PriceDistanceToPips(spec, quote.Spread);
-        if (spreadPips > riskSettings.MaxSpreadPips)
-        {
-            failed.Add("Spread");
-            return RiskEvaluationResult.Fail(
-                passed,
-                failed,
-                $"Spread too wide. Current spread is {spreadPips:F2} pips.");
-        }
+        //if (spreadPips > riskSettings.MaxSpreadPips)
+        //{
+        //    failed.Add("Spread");
+        //    return RiskEvaluationResult.Fail(
+        //        passed,
+        //        failed,
+        //        $"Spread too wide. Current spread is {spreadPips:F2} pips.");
+        //}
 
-        passed.Add("Spread");
+        //passed.Add("Spread");
 
         var entryPrice = signal.Direction == TradeDirection.Buy ? quote.Ask : quote.Bid;
 

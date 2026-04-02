@@ -10,6 +10,7 @@ AlgoBot/backtests/
 AlgoBot/bin/
 AlgoBot/obj/
 AlgoBot/publish/
+AlgoBot/data/
 AlgoBot/candle_cache_*.json
 publish/
 bin/

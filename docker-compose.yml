@@ -1,0 +1,44 @@
+services:
+  2ndalgobot:
+    #image: chidiie/algobot:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 2ndalgobot
+    restart: unless-stopped      # auto-restarts on crash or reboot
+
+    # Environment variables override appsettings.json
+    # Format: ALGOBOT_{Section}__{Key}=value  (double underscore = nesting)
+    environment:
+      - ALGOBOT_MetaApi__Token=${METAAPI_TOKEN}
+      - ALGOBOT_MetaApi__AccountId=${METAAPI_ACCOUNT_ID}
+      - ALGOBOT_Telegram__BotToken=${TELEGRAM_BOT_TOKEN}
+      - ALGOBOT_Telegram__ChatId=${TELEGRAM_CHAT_ID}
+      - ALGOBOT_Trading__Mode=${TRADING_MODE:-Paper}
+      - ALGOBOT_Trading__Instruments__0=${INSTRUMENT_0:-EURUSD}
+      - ALGOBOT_Trading__Instruments__1=${INSTRUMENT_1:-}
+      - ASPNETCORE_ENVIRONMENT=Production
+
+    # Persistent volumes — survive container restarts and updates
+    volumes:
+      - 2ndalgobot_logs:/app/logs
+      - 2ndalgobot_data:/app/data
+
+    # Logging: keep 10 days of container logs, max 100MB
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+    # Health check: verify the process is still running
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "AlgoBot.dll"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  algobot_logs:
+  algobot_data:

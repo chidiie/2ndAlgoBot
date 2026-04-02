@@ -1,0 +1,32 @@
+# Secrets — NEVER commit these
+.env
+AlgoBot/appsettings.json
+AlgoBot/appsettings.Development.json
+AlgoBot/backtests/
+.vs
+.codesight
+
+# Build outputs
+AlgoBot/bin/
+AlgoBot/obj/
+AlgoBot/publish/
+AlgoBot/candle_cache_*.json
+publish/
+bin/
+obj/
+
+# Database and logs — machine-specific
+*.db
+*.db-shm
+*.db-wal
+logs/
+backtest_*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.user

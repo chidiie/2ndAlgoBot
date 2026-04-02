@@ -314,12 +314,7 @@ public sealed class MetaApiRestClient : IMarketDataProvider, ITradeExecutor
             takeProfit = (double)request.TakeProfit,
             comment = string.IsNullOrWhiteSpace(request.Comment)
                     ? request.StrategyTag
-                    : request.Comment,
-            //ClientId = string.IsNullOrWhiteSpace(request.ClientId)
-            //    ? BuildClientId(request)
-            //    : request.ClientId,
-            //Magic = request.MagicNumber,
-            //Slippage = slippagePoints
+                    : request.Comment
         };
 
         var requestUri = BuildTradingUri("trade");

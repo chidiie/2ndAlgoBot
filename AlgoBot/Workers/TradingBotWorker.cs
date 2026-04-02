@@ -74,14 +74,14 @@ public sealed class TradingBotWorker : BackgroundService
         //    InstrumentsOverride = new List<string> {"XAUUSD", "DE30", "UK100" }
         //}, cancellationToken);
 
-        var summary = await _backtestEngine.RunAsync(new BacktestRequest
-        {
-            StartUtc = new DateTime(2025, 10, 1, 0, 0, 0, DateTimeKind.Utc),
-            EndUtc = new DateTime(2026, 3, 26, 0, 0, 0, DateTimeKind.Utc),
-            StartingBalance = 200m,
-            SessionsToRun = new List<string> { },
-            InstrumentsOverride = new List<string> { }
-        }, cancellationToken);
+        //var summary = await _backtestEngine.RunAsync(new BacktestRequest
+        //{
+        //    StartUtc = new DateTime(2025, 10, 1, 0, 0, 0, DateTimeKind.Utc),
+        //    EndUtc = new DateTime(2026, 3, 26, 0, 0, 0, DateTimeKind.Utc),
+        //    StartingBalance = 200m,
+        //    SessionsToRun = new List<string> { },
+        //    InstrumentsOverride = new List<string> { }
+        //}, cancellationToken);
 
         //var summary1 = await _backtestEngine.RunAsync(new BacktestRequest
         //{

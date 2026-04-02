@@ -51,8 +51,10 @@ public sealed class OrbRangeBuilder : IOrbRangeBuilder
                 window);
         }
 
-        var timeframe = settings.Strategy.RangeTimeframe;
-        var timeframeSpan = TradingTimeHelper.GetTimeframeSpan(timeframe);
+        var rangeTimeframe = settings.Strategy.RangeTimeframe;
+        var breakoutTimeframe = settings.Strategy.BreakoutTimeframe;
+        var rangeTimeframeSpan = TradingTimeHelper.GetTimeframeSpan(rangeTimeframe);
+        var breakoutTimeframeSpan = TradingTimeHelper.GetTimeframeSpan(breakoutTimeframe);
         var orbSpan = window.OrbEndUtc - window.SessionStartUtc;
 
         if (orbSpan <= TimeSpan.Zero)
@@ -60,14 +62,14 @@ public sealed class OrbRangeBuilder : IOrbRangeBuilder
             return OrbBuildResult.Pending("ORB window duration is invalid.", window);
         }
 
-        if (orbSpan.Ticks % timeframeSpan.Ticks != 0)
+        if (orbSpan.Ticks % rangeTimeframeSpan.Ticks != 0)
         {
             return OrbBuildResult.Pending(
-                $"RangeTimeframe '{timeframe}' does not divide session ORB duration ({session.OrbMinutes} minutes) evenly.",
+                $"RangeTimeframe '{rangeTimeframeSpan}' does not divide session ORB duration ({session.OrbMinutes} minutes) evenly.",
                 window);
         }
 
-        var expectedBars = (int)(orbSpan.Ticks / timeframeSpan.Ticks);
+        var expectedBars = (int)(orbSpan.Ticks / rangeTimeframeSpan.Ticks);
         if (expectedBars <= 0)
         {
             return OrbBuildResult.Pending("Expected ORB candle count is zero.", window);
@@ -82,7 +84,7 @@ public sealed class OrbRangeBuilder : IOrbRangeBuilder
         {
             candles = await _marketDataProvider.GetCandlesAsync(
                 instrumentState.Instrument,
-                timeframe,
+                breakoutTimeframe,
                 requestLimit,
                 window.OrbEndUtc,
                 cancellationToken);
@@ -113,11 +115,11 @@ public sealed class OrbRangeBuilder : IOrbRangeBuilder
         if (!HasContinuousCoverage(
                 rangeCandles,
                 window.SessionStartUtc,
-                timeframeSpan,
+                breakoutTimeframeSpan,
                 expectedBars))
         {
             return OrbBuildResult.Pending(
-                $"ORB candle coverage is incomplete or not aligned for timeframe {timeframe}.",
+                $"ORB candle coverage is incomplete or not aligned for timeframe {breakoutTimeframe}.",
                 window);
         }
 
@@ -133,7 +135,7 @@ public sealed class OrbRangeBuilder : IOrbRangeBuilder
             range,
             rangeCandles.Count,
             window,
-            $"ORB built successfully using {rangeCandles.Count} {timeframe} candles.");
+            $"ORB built successfully using {rangeCandles.Count} {breakoutTimeframe} - {candles.Count} candles.");
     }
 
     private static bool HasContinuousCoverage(
